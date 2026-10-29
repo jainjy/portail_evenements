@@ -53,3 +53,13 @@ python manage.py test
 - `annuler_inscription` filtre sur `utilisateur=request.user` (404 sinon).
 - Vues de gestion : décorateur `gestionnaire_requis` (anonyme → connexion, non-staff → 403).
 - En production : définir `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS`.
+
+## Tailwind CSS
+Géré par le paquet **django-tailwind-cli** (binaire Tailwind autonome, **sans Node.js**).
+Le CSS compilé (`static/css/tailwind.css`) est fourni : le site fonctionne hors ligne sans rien faire.
+Pour modifier le style (téléchargement du binaire au premier lancement) :
+```bash
+python manage.py tailwind build    # compile une fois
+python manage.py tailwind watch    # recompile à chaque modification
+```
+Source : `css_src/input.css` (et les templates).

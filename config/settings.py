@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_tailwind_cli",
     "evenements",
 ]
 
@@ -65,6 +66,12 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# django-tailwind-cli : source -> CSS compilé (python manage.py tailwind build)
+TAILWIND_CLI_SRC_CSS = "css_src/input.css"
+TAILWIND_CLI_DIST_CSS = "css/tailwind.css"
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "connexion"

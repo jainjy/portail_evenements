@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ evenement.titre }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ evenement.titre }} <span class="badge">{{ evenement.get_categorie_display }}</span></h1>
+  <p>📍 {{ evenement.lieu }} — 🕒 {{ evenement.date_evenement|date:"l d/m/Y H:i" }}</p>
+  <p>{{ evenement.description|linebreaks }}</p>
+  <p><strong>Places restantes : {{ evenement.places_restantes }} / {{ evenement.capacite }}</strong></p>
+
+  {% if evenement.est_passe %}
+    <p>Cet événement a déjà commencé.</p>
+  {% elif not user.is_authenticated %}
+    <a class="btn" href="{% url 'connexion' %}?next={{ request.path }}">Connectez-vous pour vous inscrire</a>
+  {% elif deja_inscrit %}
+    <p>✅ Vous êtes inscrit(e).</p>
+    <a class="btn danger" href="{% url 'annuler_inscription' inscription.pk %}">Annuler mon inscription</a>
+  {% elif evenement.est_complet %}
+    <p><strong>Événement complet.</strong></p>
+  {% else %}
+    <form method="post" action="{% url 's_inscrire' evenement.pk %}">{% csrf_token %}
+      <button class="btn" type="submit">S'inscrire</button></form>
+  {% endif %}
+</div>
+<a href="{% url 'liste_evenements' %}">← Retour à la liste</a>
+{% endblock %}

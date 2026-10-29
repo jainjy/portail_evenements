@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Événements à venir{% endblock %}
+{% block content %}
+<h1>Événements à venir</h1>
+<form method="get" class="card">
+  <input class="inline" type="search" name="q" value="{{ q }}" placeholder="Rechercher par titre" style="width:55%">
+  <select class="inline" name="categorie">
+    <option value="">Toutes catégories</option>
+    {% for val, label in categories %}<option value="{{ val }}" {% if val == categorie %}selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <button class="btn" type="submit">Filtrer</button>
+</form>
+{% for e in page %}
+  <div class="card">
+    <h3><a href="{% url 'detail_evenement' e.pk %}">{{ e.titre }}</a> <span class="badge">{{ e.get_categorie_display }}</span></h3>
+    <p>📍 {{ e.lieu }} — 🕒 {{ e.date_evenement|date:"d/m/Y H:i" }}</p>
+    <p>{% if e.est_complet %}<strong>Complet</strong>{% else %}{{ e.places_restantes }} place{{ e.places_restantes|pluralize }} restante{{ e.places_restantes|pluralize }}{% endif %}</p>
+  </div>
+{% empty %}
+  <p>Aucun événement ne correspond.</p>
+{% endfor %}
+{% if page.has_other_pages %}
+<div class="pagination">
+  {% if page.has_previous %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.previous_page_number }}">← Précédent</a>{% endif %}
+  <span>Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.next_page_number }}">Suivant →</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

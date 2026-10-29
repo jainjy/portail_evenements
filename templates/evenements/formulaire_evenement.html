@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ titre_page }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ titre_page }}</h1>
+  <form method="post" novalidate>{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit">Enregistrer</button>
+    <a class="btn gris" href="{% url 'gestion_evenements' %}">Annuler</a>
+  </form>
+</div>
+{% endblock %}

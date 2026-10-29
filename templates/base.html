@@ -1,0 +1,46 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Portail d'événements{% endblock %}</title>
+  <style>
+    body{font-family:system-ui,sans-serif;margin:0;background:#f5f6f8;color:#222}
+    header{background:#2b4c7e;color:#fff;padding:.8rem 1.5rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+    header a,header button{color:#fff;text-decoration:none;background:none;border:0;font:inherit;cursor:pointer}
+    header .brand{font-weight:700;font-size:1.2rem;margin-right:auto}
+    main{max-width:900px;margin:1.5rem auto;padding:0 1rem}
+    .card{background:#fff;border-radius:8px;padding:1rem;margin-bottom:1rem;box-shadow:0 1px 3px #0002}
+    .btn{display:inline-block;background:#2b4c7e;color:#fff;padding:.45rem .9rem;border:0;border-radius:6px;text-decoration:none;cursor:pointer;font:inherit}
+    .btn.danger{background:#b3261e}.btn.gris{background:#777}
+    .msg{padding:.7rem 1rem;border-radius:6px;margin-bottom:.7rem}
+    .msg.success{background:#d9f2e0}.msg.error{background:#fadbd8}.msg.info,.msg.warning{background:#fff3cd}
+    table{width:100%;border-collapse:collapse;background:#fff}
+    th,td{padding:.5rem;border-bottom:1px solid #ddd;text-align:left}
+    input,select,textarea{padding:.4rem;width:100%;box-sizing:border-box}
+    .inline{display:inline;width:auto}.inline input,.inline select{width:auto}
+    .errorlist{color:#b3261e;list-style:none;padding:0;margin:.2rem 0}
+    .badge{padding:.1rem .5rem;border-radius:10px;font-size:.85rem;background:#e0e6ef}
+    .pagination{display:flex;gap:1rem;justify-content:center}
+  </style>
+</head>
+<body>
+<header>
+  <a class="brand" href="{% url 'liste_evenements' %}">📅 Portail d'événements</a>
+  <a href="{% url 'liste_evenements' %}">Événements</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'mes_inscriptions' %}">Mes inscriptions</a>
+    {% if user.is_staff %}<a href="{% url 'gestion_evenements' %}">Gestion</a>{% endif %}
+    <form method="post" action="{% url 'deconnexion' %}" class="inline">{% csrf_token %}
+      <button type="submit">Déconnexion ({{ user.username }})</button></form>
+  {% else %}
+    <a href="{% url 'connexion' %}">Connexion</a>
+    <a href="{% url 'creer_compte' %}">Créer un compte</a>
+  {% endif %}
+</header>
+<main>
+  {% for message in messages %}<div class="msg {{ message.tags }}">{{ message }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

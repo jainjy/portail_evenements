@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Gestion des événements{% endblock %}
+{% block content %}
+<h1>Gestion des événements</h1>
+<p><a class="btn" href="{% url 'creer_evenement' %}">+ Nouvel événement</a></p>
+<table>
+  <tr><th>Titre</th><th>Date</th><th>Places restantes</th><th>Actions</th></tr>
+  {% for e in evenements %}
+  <tr>
+    <td>{{ e.titre }}</td>
+    <td>{{ e.date_evenement|date:"d/m/Y H:i" }}{% if e.est_passe %} <span class="badge">passé</span>{% endif %}</td>
+    <td>{{ e.places_restantes }} / {{ e.capacite }}</td>
+    <td><a href="{% url 'modifier_evenement' e.pk %}">Modifier</a> · <a href="{% url 'inscrits_evenement' e.pk %}">Inscrits</a></td>
+  </tr>
+  {% empty %}<tr><td colspan="4">Aucun événement.</td></tr>{% endfor %}
+</table>
+{% endblock %}

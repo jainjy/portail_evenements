@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Mes inscriptions{% endblock %}
+{% block content %}
+<h1>Mes inscriptions</h1>
+{% if inscriptions %}
+<table>
+  <tr><th>Événement</th><th>Date</th><th>Statut</th><th></th></tr>
+  {% for i in inscriptions %}
+  <tr>
+    <td><a href="{% url 'detail_evenement' i.evenement.pk %}">{{ i.evenement.titre }}</a></td>
+    <td>{{ i.evenement.date_evenement|date:"d/m/Y H:i" }}</td>
+    <td>{{ i.get_statut_display }}</td>
+    <td>{% if i.statut == "confirmee" and not i.evenement.est_passe %}
+      <a class="btn danger" href="{% url 'annuler_inscription' i.pk %}">Annuler</a>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}<p>Vous n'avez aucune inscription. <a href="{% url 'liste_evenements' %}">Voir les événements</a></p>{% endif %}
+{% endblock %}

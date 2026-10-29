@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Confirmer l'annulation{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Annuler l'inscription ?</h1>
+  <p>Voulez-vous vraiment annuler votre inscription à <strong>{{ inscription.evenement.titre }}</strong>
+     ({{ inscription.evenement.date_evenement|date:"d/m/Y H:i" }}) ?</p>
+  <form method="post">{% csrf_token %}
+    <button class="btn danger" type="submit">Oui, annuler</button>
+    <a class="btn gris" href="{% url 'mes_inscriptions' %}">Non, revenir</a>
+  </form>
+</div>
+{% endblock %}

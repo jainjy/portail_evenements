@@ -1,25 +1,48 @@
 {% extends "base.html" %}
 {% block title %}{{ evenement.titre }}{% endblock %}
 {% block content %}
-<div class="card">
-  <h1>{{ evenement.titre }} <span class="badge">{{ evenement.get_categorie_display }}</span></h1>
-  <p>📍 {{ evenement.lieu }} — 🕒 {{ evenement.date_evenement|date:"l d/m/Y H:i" }}</p>
-  <p>{{ evenement.description|linebreaks }}</p>
-  <p><strong>Places restantes : {{ evenement.places_restantes }} / {{ evenement.capacite }}</strong></p>
+<div class="card !p-0 overflow-hidden">
+  <div class="border-b border-slate-100 p-6">
+    <span class="badge mb-3">{{ evenement.get_categorie_display }}</span>
+    <h1 class="!mb-0 text-3xl">{{ evenement.titre }}</h1>
 
-  {% if evenement.est_passe %}
-    <p>Cet événement a déjà commencé.</p>
-  {% elif not user.is_authenticated %}
-    <a class="btn" href="{% url 'connexion' %}?next={{ request.path }}">Connectez-vous pour vous inscrire</a>
-  {% elif deja_inscrit %}
-    <p>✅ Vous êtes inscrit(e).</p>
-    <a class="btn danger" href="{% url 'annuler_inscription' inscription.pk %}">Annuler mon inscription</a>
-  {% elif evenement.est_complet %}
-    <p><strong>Événement complet.</strong></p>
-  {% else %}
-    <form method="post" action="{% url 's_inscrire' evenement.pk %}">{% csrf_token %}
-      <button class="btn" type="submit">S'inscrire</button></form>
-  {% endif %}
+    <div class="mt-5 grid gap-3 sm:grid-cols-2">
+      <div class="meta-item">{% include "partials/icon.html" with name="map-pin" cls="size-5" %} {{ evenement.lieu }}</div>
+      <div class="meta-item">{% include "partials/icon.html" with name="clock" cls="size-5" %} {{ evenement.date_evenement|date:"l d/m/Y H:i" }}</div>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <div class="richtext text-slate-600">{{ evenement.description|linebreaks }}</div>
+
+    <div class="mt-6 rounded-lg bg-slate-50 p-4">
+      <div class="mb-2 flex items-center justify-between text-sm">
+        <span class="meta-item font-semibold text-slate-900">{% include "partials/icon.html" with name="users" %} Places restantes</span>
+        <strong class="text-slate-900">{{ evenement.places_restantes }} / {{ evenement.capacite }}</strong>
+      </div>
+      <div class="progress"><span style="width:{% widthratio evenement.places_restantes evenement.capacite 100 %}%"></span></div>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-100 bg-slate-50/60 p-6">
+    {% if evenement.est_passe %}
+      <div class="msg warning !mb-0">{% include "partials/icon.html" with name="clock" cls="size-5" %}<span>Cet événement a déjà commencé.</span></div>
+    {% elif not user.is_authenticated %}
+      <a class="btn" href="{% url 'connexion' %}?next={{ request.path }}">{% include "partials/icon.html" with name="login" %} Connectez-vous pour vous inscrire</a>
+    {% elif deja_inscrit %}
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <span class="badge green !px-3 !py-1.5 !text-sm">{% include "partials/icon.html" with name="check-circle" cls="size-4" %} Vous êtes inscrit(e)</span>
+        <a class="btn danger" href="{% url 'annuler_inscription' inscription.pk %}">{% include "partials/icon.html" with name="x-circle" %} Annuler mon inscription</a>
+      </div>
+    {% elif evenement.est_complet %}
+      <div class="msg error !mb-0">{% include "partials/icon.html" with name="x-circle" cls="size-5" %}<span><strong>Événement complet.</strong></span></div>
+    {% else %}
+      <form method="post" action="{% url 's_inscrire' evenement.pk %}" class="m-0">{% csrf_token %}
+        <button class="btn" type="submit">{% include "partials/icon.html" with name="ticket" %} S'inscrire</button>
+      </form>
+    {% endif %}
+  </div>
 </div>
-<a href="{% url 'liste_evenements' %}">← Retour à la liste</a>
+
+<a class="inline-flex items-center gap-1.5 text-sm font-medium" href="{% url 'liste_evenements' %}">{% include "partials/icon.html" with name="arrow-left" %} Retour à la liste</a>
 {% endblock %}

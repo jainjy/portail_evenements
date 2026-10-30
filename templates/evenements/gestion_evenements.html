@@ -1,17 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Gestion des événements{% endblock %}
 {% block content %}
-<h1>Gestion des événements</h1>
-<p><a class="btn" href="{% url 'creer_evenement' %}">+ Nouvel événement</a></p>
+<div class="page-header">
+  <h1>Gestion des événements</h1>
+  <a class="btn" href="{% url 'creer_evenement' %}">{% include "partials/icon.html" with name="plus" %} Nouvel événement</a>
+</div>
+<div class="table-wrap">
 <table>
-  <tr><th>Titre</th><th>Date</th><th>Places restantes</th><th>Actions</th></tr>
+  <tr><th>Titre</th><th>Date</th><th>Places restantes</th><th class="text-right">Actions</th></tr>
   {% for e in evenements %}
   <tr>
-    <td>{{ e.titre }}</td>
-    <td>{{ e.date_evenement|date:"d/m/Y H:i" }}{% if e.est_passe %} <span class="badge">passé</span>{% endif %}</td>
-    <td>{{ e.places_restantes }} / {{ e.capacite }}</td>
-    <td><a href="{% url 'modifier_evenement' e.pk %}">Modifier</a> · <a href="{% url 'inscrits_evenement' e.pk %}">Inscrits</a></td>
+    <td class="font-medium text-slate-900">{{ e.titre }}</td>
+    <td class="whitespace-nowrap">{{ e.date_evenement|date:"d/m/Y H:i" }}{% if e.est_passe %} <span class="badge gray ml-1">passé</span>{% endif %}</td>
+    <td class="whitespace-nowrap">{{ e.places_restantes }} / {{ e.capacite }}</td>
+    <td>
+      <div class="flex justify-end gap-2">
+        <a class="btn gris sm" href="{% url 'modifier_evenement' e.pk %}">{% include "partials/icon.html" with name="pencil" %} Modifier</a>
+        <a class="btn gris sm" href="{% url 'inscrits_evenement' e.pk %}">{% include "partials/icon.html" with name="users" %} Inscrits</a>
+      </div>
+    </td>
   </tr>
-  {% empty %}<tr><td colspan="4">Aucun événement.</td></tr>{% endfor %}
+  {% empty %}<tr><td colspan="4" class="py-10 text-center text-slate-500">Aucun événement.</td></tr>{% endfor %}
 </table>
+</div>
 {% endblock %}

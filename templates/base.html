@@ -6,25 +6,54 @@
   <title>{% block title %}Portail d'événements{% endblock %}</title>
   {% tailwind_css %}
 </head>
-<body class="min-h-screen">
-<header class="bg-blue-900 text-white">
-  <nav class="mx-auto flex max-w-4xl flex-wrap items-center gap-4 px-4 py-3">
-    <a class="mr-auto text-xl font-bold text-white" href="{% url 'liste_evenements' %}">📅 Portail d'événements</a>
-    <a class="text-white" href="{% url 'liste_evenements' %}">Événements</a>
+<body class="flex min-h-screen flex-col">
+<header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <nav class="mx-auto flex max-w-5xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-3">
+    <a class="brand mr-auto" href="{% url 'liste_evenements' %}">
+      <span class="brand-logo">{% include "partials/icon.html" with name="calendar-days" cls="size-5" %}</span>
+      Portail d'événements
+    </a>
+    <a class="nav-link {% if request.resolver_match.url_name == 'liste_evenements' %}is-active{% endif %}" href="{% url 'liste_evenements' %}">
+      {% include "partials/icon.html" with name="calendar-days" %} Événements
+    </a>
     {% if user.is_authenticated %}
-      <a class="text-white" href="{% url 'mes_inscriptions' %}">Mes inscriptions</a>
-      {% if user.is_staff %}<a class="text-white" href="{% url 'gestion_evenements' %}">Gestion</a>{% endif %}
-      <form method="post" action="{% url 'deconnexion' %}" class="inline">{% csrf_token %}
-        <button type="submit" class="cursor-pointer hover:underline">Déconnexion ({{ user.username }})</button></form>
+      <a class="nav-link {% if request.resolver_match.url_name == 'mes_inscriptions' %}is-active{% endif %}" href="{% url 'mes_inscriptions' %}">
+        {% include "partials/icon.html" with name="ticket" %} Mes inscriptions
+      </a>
+      {% if user.is_staff %}
+      <a class="nav-link {% if request.resolver_match.url_name == 'gestion_evenements' %}is-active{% endif %}" href="{% url 'gestion_evenements' %}">
+        {% include "partials/icon.html" with name="grid" %} Gestion
+      </a>
+      {% endif %}
+      <form method="post" action="{% url 'deconnexion' %}" class="m-0 ml-1 border-l border-slate-200 pl-2">{% csrf_token %}
+        <button type="submit" class="nav-link">
+          {% include "partials/icon.html" with name="logout" %} Déconnexion ({{ user.username }})
+        </button>
+      </form>
     {% else %}
-      <a class="text-white" href="{% url 'connexion' %}">Connexion</a>
-      <a class="text-white" href="{% url 'creer_compte' %}">Créer un compte</a>
+      <a class="nav-link" href="{% url 'connexion' %}">{% include "partials/icon.html" with name="login" %} Connexion</a>
+      <a class="btn sm" href="{% url 'creer_compte' %}">{% include "partials/icon.html" with name="user-plus" %} Créer un compte</a>
     {% endif %}
   </nav>
 </header>
-<main class="mx-auto my-6 max-w-4xl px-4">
-  {% for message in messages %}<div class="msg {{ message.tags }}">{{ message }}</div>{% endfor %}
+
+<main class="mx-auto my-8 w-full max-w-5xl flex-1 px-4">
+  {% for message in messages %}
+  <div class="msg {{ message.tags }}" role="alert">
+    {% if "success" in message.tags %}{% include "partials/icon.html" with name="check-circle" cls="size-5" %}
+    {% elif "error" in message.tags %}{% include "partials/icon.html" with name="x-circle" cls="size-5" %}
+    {% elif "warning" in message.tags %}{% include "partials/icon.html" with name="warning" cls="size-5" %}
+    {% else %}{% include "partials/icon.html" with name="info" cls="size-5" %}{% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
   {% block content %}{% endblock %}
 </main>
+
+<footer class="border-t border-slate-200 bg-white">
+  <div class="mx-auto max-w-5xl px-4 py-5 text-center text-sm text-slate-500">
+    &copy; {% now "Y" %} Portail d'événements
+  </div>
+</footer>
 </body>
 </html>

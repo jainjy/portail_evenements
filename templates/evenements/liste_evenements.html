@@ -1,29 +1,57 @@
 {% extends "base.html" %}
 {% block title %}Événements à venir{% endblock %}
 {% block content %}
-<h1>Événements à venir</h1>
-<form method="get" class="card">
-  <input class="inline" type="search" name="q" value="{{ q }}" placeholder="Rechercher par titre" style="width:55%">
-  <select class="inline" name="categorie">
+<div class="page-header"><h1>Événements à venir</h1></div>
+
+<form method="get" class="card flex flex-col gap-3 sm:flex-row sm:items-center">
+  <div class="relative flex-1">
+    {% include "partials/icon.html" with name="search" cls="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" %}
+    <input class="pl-10" type="search" name="q" value="{{ q }}" placeholder="Rechercher par titre">
+  </div>
+  <select class="sm:w-56" name="categorie">
     <option value="">Toutes catégories</option>
     {% for val, label in categories %}<option value="{{ val }}" {% if val == categorie %}selected{% endif %}>{{ label }}</option>{% endfor %}
   </select>
-  <button class="btn" type="submit">Filtrer</button>
+  <button class="btn" type="submit">{% include "partials/icon.html" with name="search" %} Filtrer</button>
 </form>
+
 {% for e in page %}
-  <div class="card">
-    <h3><a href="{% url 'detail_evenement' e.pk %}">{{ e.titre }}</a> <span class="badge">{{ e.get_categorie_display }}</span></h3>
-    <p>📍 {{ e.lieu }} — 🕒 {{ e.date_evenement|date:"d/m/Y H:i" }}</p>
-    <p>{% if e.est_complet %}<strong>Complet</strong>{% else %}{{ e.places_restantes }} place{{ e.places_restantes|pluralize }} restante{{ e.places_restantes|pluralize }}{% endif %}</p>
-  </div>
+  <article class="card event-card">
+    <div class="event-date">
+      <span class="day">{{ e.date_evenement|date:"d" }}</span>
+      <span class="month">{{ e.date_evenement|date:"M" }}</span>
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="flex flex-wrap items-center gap-2">
+        <h3><a class="text-slate-900 hover:text-indigo-600" href="{% url 'detail_evenement' e.pk %}">{{ e.titre }}</a></h3>
+        <span class="badge">{{ e.get_categorie_display }}</span>
+      </div>
+      <div class="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2">
+        <span class="meta-item">{% include "partials/icon.html" with name="map-pin" %} {{ e.lieu }}</span>
+        <span class="meta-item">{% include "partials/icon.html" with name="clock" %} {{ e.date_evenement|date:"d/m/Y H:i" }}</span>
+        {% if e.est_complet %}
+          <span class="badge red">Complet</span>
+        {% else %}
+          <span class="badge green">{{ e.places_restantes }} place{{ e.places_restantes|pluralize }} restante{{ e.places_restantes|pluralize }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <a href="{% url 'detail_evenement' e.pk %}" class="hidden self-center text-slate-300 hover:text-indigo-600 sm:block" aria-label="Voir le détail">
+      {% include "partials/icon.html" with name="chevron-right" cls="size-6" %}
+    </a>
+  </article>
 {% empty %}
-  <p>Aucun événement ne correspond.</p>
+  <div class="empty">
+    {% include "partials/icon.html" with name="calendar-days" cls="size-10 text-slate-300" %}
+    <p>Aucun événement ne correspond.</p>
+  </div>
 {% endfor %}
+
 {% if page.has_other_pages %}
 <div class="pagination">
-  {% if page.has_previous %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.previous_page_number }}">← Précédent</a>{% endif %}
+  {% if page.has_previous %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.previous_page_number }}">{% include "partials/icon.html" with name="arrow-left" %} Précédent</a>{% endif %}
   <span>Page {{ page.number }} / {{ page.paginator.num_pages }}</span>
-  {% if page.has_next %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.next_page_number }}">Suivant →</a>{% endif %}
+  {% if page.has_next %}<a href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page.next_page_number }}">Suivant {% include "partials/icon.html" with name="arrow-right" %}</a>{% endif %}
 </div>
 {% endif %}
 {% endblock %}

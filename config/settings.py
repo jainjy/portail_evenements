@@ -16,7 +16,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_tailwind_cli",
+    "tailwind",
+    "theme",
     "evenements",
 ]
 
@@ -68,9 +69,11 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# django-tailwind-cli : source -> CSS compilé (python manage.py tailwind build)
-TAILWIND_CLI_SRC_CSS = "css_src/input.css"
-TAILWIND_CLI_DIST_CSS = "css/tailwind.css"
+# django-tailwind (node/npm) : source -> CSS compilé (python manage.py tailwind build)
+TAILWIND_APP_NAME = "theme"
+NPM_BIN_PATH = "npm"
+TAILWIND_CSS_PATH = "css/dist/styles.css"
+TAILWIND_USE_STANDALONE_BINARY = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

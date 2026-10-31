@@ -55,11 +55,14 @@ python manage.py test
 - En production : définir `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`, `DJANGO_ALLOWED_HOSTS`.
 
 ## Tailwind CSS
-Géré par le paquet **django-tailwind-cli** (binaire Tailwind autonome, **sans Node.js**).
-Le CSS compilé (`static/css/tailwind.css`) est fourni : le site fonctionne hors ligne sans rien faire.
-Pour modifier le style (téléchargement du binaire au premier lancement) :
+Géré par le paquet **django-tailwind** (Node.js / npm, **pas** le binaire autonome).
+Prérequis : Node.js et npm installés (https://nodejs.org).
+
+Le CSS compilé (`theme/static/css/dist/styles.css`) est fourni : le site fonctionne sans rien faire.
+Pour modifier le style :
 ```bash
-python manage.py tailwind build    # compile une fois
-python manage.py tailwind watch    # recompile à chaque modification
+python manage.py tailwind install   # installe les dépendances npm (première fois)
+python manage.py tailwind build     # compile une fois
+python manage.py tailwind start    # recompile à chaque modification
 ```
 Source : `css_src/input.css` (et les templates).
